@@ -1,26 +1,29 @@
-from movie_booking.movie import Movie
-from movie_booking.cinema import Cinema
-from movie_booking.screen import Screen
-from movie_booking.seat import Seat
-from movie_booking.show import Show
-from movie_booking.booking import Booking
-from movie_booking.user import User
-from movie_booking.payment_gateway import PaymentGateway
+from movie import Movie
+from cinema import Cinema
+from screen import Screen
+from seat import Seat
+from show import Show
+from booking import Booking
+from user import User
+from payment_gateway import PaymentGateway
 from datetime import datetime
-import uuid # To generate unique IDs
+import uuid  # To generate unique IDs
+
 
 class BookingSystem:
     def __init__(self):
         self.movies = {}  # movie_id: Movie object
-        self.cinemas = {} # cinema_id: Cinema object
-        self.users = {}   # user_id: User object
-        self.shows = {}   # show_id: Show object
-        self.bookings = {} # booking_id: Booking object
+        self.cinemas = {}  # cinema_id: Cinema object
+        self.users = {}  # user_id: User object
+        self.shows = {}  # show_id: Show object
+        self.bookings = {}  # booking_id: Booking object
         self.payment_gateway = PaymentGateway()
 
     def add_movie(self, title, duration, genre, language, release_date, description):
         movie_id = str(uuid.uuid4())
-        movie = Movie(movie_id, title, duration, genre, language, release_date, description)
+        movie = Movie(
+            movie_id, title, duration, genre, language, release_date, description
+        )
         self.movies[movie_id] = movie
         print(f"Added movie: {title} with ID: {movie_id}")
         return movie
@@ -49,7 +52,9 @@ class BookingSystem:
             seat = Seat(seat_id, i, 1, screen)
             screen.seats.append(seat)
 
-        print(f"Added screen {screen_number} to cinema {cinema.name} with ID: {screen_id}")
+        print(
+            f"Added screen {screen_number} to cinema {cinema.name} with ID: {screen_id}"
+        )
         return screen
 
     def add_user(self, name, email, phone_number):
@@ -88,8 +93,10 @@ class BookingSystem:
         show_id = str(uuid.uuid4())
         show = Show(show_id, movie, screen, start_time, end_time, price)
         self.shows[show_id] = show
-        screen.add_show(show) # Add show to the screen's list of shows
-        print(f"Added show for movie '{movie.title}' on screen {screen.screen_number} at {start_time_str} with ID: {show_id}")
+        screen.add_show(show)  # Add show to the screen's list of shows
+        print(
+            f"Added show for movie '{movie.title}' on screen {screen.screen_number} at {start_time_str} with ID: {show_id}"
+        )
         return show
 
     def search_movies(self, title=None, genre=None, language=None):
@@ -148,16 +155,20 @@ class BookingSystem:
             # Find the seat object by ID within the show's screen's seats
             found_seat = None
             if show.screen and show.screen.seats:
-                 for seat in show.screen.seats:
-                     if seat.seat_id == seat_id:
-                         found_seat = seat
-                         break
+                for seat in show.screen.seats:
+                    if seat.seat_id == seat_id:
+                        found_seat = seat
+                        break
 
             if found_seat and found_seat in available_seats:
                 seats_to_book.append(found_seat)
             else:
-                print(f"Seat with ID {seat_id} is not available or does not exist for this show.")
-                return None # Fail the entire booking if any seat is invalid/unavailable
+                print(
+                    f"Seat with ID {seat_id} is not available or does not exist for this show."
+                )
+                return (
+                    None  # Fail the entire booking if any seat is invalid/unavailable
+                )
 
         if not seats_to_book:
             print("No valid seats provided for booking.")
@@ -167,7 +178,9 @@ class BookingSystem:
         total_amount = show.price * len(seats_to_book)
 
         # Process payment (using the placeholder gateway)
-        payment_successful = self.payment_gateway.process_payment(total_amount, {"user_id": user_id, "show_id": show_id, "seat_ids": seat_ids})
+        payment_successful = self.payment_gateway.process_payment(
+            total_amount, {"user_id": user_id, "show_id": show_id, "seat_ids": seat_ids}
+        )
 
         if not payment_successful:
             print("Payment failed. Booking not created.")
@@ -177,7 +190,9 @@ class BookingSystem:
         booked_successfully, failed_to_book = show.book_seats(seats_to_book)
 
         if failed_to_book:
-            print(f"Failed to book some seats: {[seat.seat_id for seat in failed_to_book]}. Rolling back booking.")
+            print(
+                f"Failed to book some seats: {[seat.seat_id for seat in failed_to_book]}. Rolling back booking."
+            )
             # Unbook any seats that were successfully booked before failure
             for seat in booked_successfully:
                 seat.unbook_seat()
@@ -186,10 +201,10 @@ class BookingSystem:
         # Create the booking object
         booking_id = str(uuid.uuid4())
         booking = Booking(booking_id, user, show, booked_successfully, total_amount)
-        booking.confirm_booking() # Confirm the booking after successful payment and seat booking
+        booking.confirm_booking()  # Confirm the booking after successful payment and seat booking
 
         self.bookings[booking_id] = booking
-        user.add_booking(booking) # Add booking to the user's list of bookings
+        user.add_booking(booking)  # Add booking to the user's list of bookings
 
         print(f"Booking successful! Booking ID: {booking_id}")
         return booking

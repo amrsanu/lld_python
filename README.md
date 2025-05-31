@@ -1,63 +1,22 @@
-# Movie Booking System
+# Low-Level Design (LLD) Examples in Python
 
-## Core Classes
+This repository contains examples of Low-Level Design (LLD) implemented in Python. LLD focuses on the detailed design of individual components of a system, including class design, data structures, algorithms, and module-level architecture.
 
-### Movie
+Understanding LLD is crucial for building robust, maintainable, and scalable software. These examples aim to illustrate key LLD principles and patterns through practical implementations.
 
-- Attributes: movie_id, title, duration, genre, language, release_date, description
-- Methods: get_details(), search_by_title(title), search_by_genre(genre)
+## Current Examples
 
-### Cinema
+*   **Movie Booking System:** A detailed example demonstrating the LLD of a simple movie booking system, including classes for movies, cinemas, shows, seats, bookings, and users.
 
-- Attributes: cinema_id, name, address, screens (list of Screen objects)
-- Methods: add_screen(screen), remove_screen(screen), get_screens(), get_shows()
+## Topics to Cover Before Starting
 
-### Screen
+Before diving into the LLD examples, it's beneficial to have a grasp of the following general topics:
 
-- Attributes: screen_id, screen_number, total_seats, cinema (Cinema object), shows (list of Show objects), seats (list of Seat objects)
-- Methods: add_show(show), remove_show(show), get_shows(), get_seats()
-
-### Seat
-
-- Attributes: seat_id, seat_number, row_number, screen (Screen object), is_booked (boolean)
-- Methods: book_seat(), unbook_seat(), is_available()
-
-### Show
-
-- Attributes: show_id, movie (Movie object), screen (Screen object), start_time, end_time, price, available_seats (list of Seat objects)
-- Methods: get_available_seats(), book_seats(seats), cancel_booking(booking_id)
-
-### Booking
-
-- Attributes: booking_id, user (User object), show (Show object), booked_seats (list of Seat objects), booking_time, total_amount, status (e.g., 'Confirmed', 'Cancelled')
-- Methods: confirm_booking(), cancel_booking(), get_details()
-
-### User
-
-- Attributes: user_id, name, email, phone_number, bookings (list of Booking objects)
-- Methods: view_bookings(), create_booking(show, seats)
-
-### PaymentGateway (Abstract or Interface)
-
-- Methods: process_payment(amount, payment_details)
-
-### BookingSystem (Central orchestrator)
-
-- Attributes: movies (list of Movie objects), cinemas (list of Cinema objects), users (list of User objects)
-- Methods: add_movie(movie), add_cinema(cinema), add_user(user), search_movies(criteria), get_shows_by_movie(movie_id), get_shows_by_cinema(cinema_id), find_available_seats(show_id), make_booking(user_id, show_id, seat_ids), cancel_booking(booking_id)
-
-## Relationships
-
-- A Cinema has multiple Screens.
-- A Screen belongs to one Cinema.
-- A Screen has multiple Seats.
-- A Seat belongs to one Screen.
-- A Screen hosts multiple Shows.
-- A Show is on one Screen.
-- A Show features one Movie.
-- A Movie can be featured in multiple Shows.
-- A User can have multiple Bookings.
-- A Booking belongs to one User.
-- A Booking is for one Show.
-- A Booking includes multiple Seats.
-The BookingSystem manages instances of Movie, Cinema, and User and orchestrates interactions between other objects.
+*   **Object-Oriented Programming (OOP) Principles:** Encapsulation, Inheritance, Polymorphism, Abstraction.
+*   **UML Diagrams:** Class diagrams and sequence diagrams for visualizing design.
+*   **Design Patterns:** Common solutions to recurring design problems (e.g., Singleton, Factory, Observer).
+*   **Data Structures and Algorithms:** Choosing appropriate structures and algorithms for efficiency.
+*   **Code Modularity and Reusability:** Designing components that are independent and reusable.
+*   **Error Handling and Exception Management:** Strategies for dealing with errors gracefully.
+*   **Testing:** Writing unit tests and integration tests to ensure correctness.
+*   **Code Style and Best Practices:** Writing clean, readable, and maintainable code (e.g., PEP 8 for Python).
